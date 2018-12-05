@@ -1,0 +1,12 @@
+IPC:
+- A module capable of IPC has the following parts:
+    - A server or remote part, which implements the code with most processing overhead,
+      and which may be run in a separate process;
+    - A client or local part, which provides local access to the remote part when
+      separate processes are used;
+    - A client/server or stub interface, which defines the following:
+        - events which may be emitted by the remote part;
+        - messages which may be received by the remote part.
+    - A set of support methods, which are additional parts of the module's API which are
+      always run locally, and so have minimal processing overhead.
+- Terminology: Client/Server or Local/Remote?
