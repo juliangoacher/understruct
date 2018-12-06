@@ -97,7 +97,7 @@ To aid service discovery, _understruct_ organises an application's different ser
 
 The standard type of service dependency is a _backwards_ dependency, where a service in one layer has a dependency on a named service in a lower, previously-instantiated layer.
 
-Backwards dependencies are declared in the argument list of a service's factory function by listing the names of the required services. _understruct_ will resolve the service instances before invoking the factory function, throwing an error if any service can't be resolved on the specified name.
+Backwards dependencies are declared in the argument list of a service's factory function by listing the names of the required services. _understruct_ will resolve the service instances before invoking the factory function.
 
 ```javascript
 function make( settings, db ) {
@@ -110,11 +110,13 @@ function make( settings, db ) {
 }
 ```
 
-Services are bound to their name on the _understruct_ backbone instance, which is available to factory functions through the `this` keyword. This means that service instances can also be accessed as named properties of the backbone, and so the following code is roughly equivalent to the previous example:
+In the example above, _understruct_ will extract the names of the dependent services - _settings_ and _db_ - from the factory function's argument list and look for services under thoses names on the backbone. This requires that services were bound to those names in previous, lower service layers of the backbone. If an instantiated service can't be found bound to any particular name then backbone instantation will be stopped and an error will be thrown.
+
+Services are bound to their name on the `services` property of the _understruct_ backbone instance, which is available to factory functions through the `this` keyword. This means that service instances can also be accessed as named properties of the backbone, and so the following code is roughly equivalent to the previous example:
 
 ```javascript
 function make() {
-    const { settings, db } = this;
+    const { settings, db } = this.services;
     const service = new Service( settings, db );
     return service;
 }

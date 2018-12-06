@@ -1,28 +1,31 @@
 {
-  "name": "understruct",
-  "version": "0.8.0",
-  "description": "Node.js microservice backbone",
-  "main": "lib/index.js",
-  "dependencies": [
-        "node-ipc": "^9.1.1"
-  ],
-  "directories": {
-        "lib": "lib"
-  },
-  "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-        "type": "git",
-        "url": "git+https://github.com/juliangoacher/understruct.git"
-  },
-  "keywords": [
-        "microservices"
-  ],
-  "author": "Julian Goacher",
-  "license": "Apache-2.0",
-  "bugs": {
-        "url": "https://github.com/juliangoacher/understruct/issues"
-  },
-  "homepage": "https://github.com/juliangoacher/understruct#readme"
+      "name": "understruct",
+      "version": "0.8.0",
+      "description": "Node.js microservice backbone",
+      "main": "lib/index.js",
+      "dependencies": {
+            "node-ipc": "^9.1.1"
+      },
+      "directories": {
+            "lib": "lib"
+      },
+      "scripts": {
+            "test": "mocha"
+      },
+      "repository": {
+            "type": "git",
+            "url": "git+https://github.com/juliangoacher/understruct.git"
+      },
+      "keywords": [
+            "microservices"
+      ],
+      "author": "Julian Goacher",
+      "license": "Apache-2.0",
+      "bugs": {
+            "url": "https://github.com/juliangoacher/understruct/issues"
+      },
+      "homepage": "https://github.com/juliangoacher/understruct#readme",
+      "devDependencies": {
+            "mocha": "^5.2.0"
+      }
 }
