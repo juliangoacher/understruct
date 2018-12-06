@@ -102,7 +102,7 @@ Backwards dependencies are declared in the argument list of a service's factory 
 ```javascript
 function make( settings, db ) {
 
-    // 'settings' and 'db' are now bound to instances of the named services.
+    // 'settings' and 'db' are instances of the named services.
 
     // ... instantiate the service ...
     const service = new Service( settings, db );
@@ -110,7 +110,7 @@ function make( settings, db ) {
 }
 ```
 
-Services are bound to their name on the _understruct_ backbone instance, and this instance is available to factory functions through the `this` keyword. This means that service instances can also be accessed as named properties of the backbone, and so the following code is roughly equivalent to the previous example:
+Services are bound to their name on the _understruct_ backbone instance, which is available to factory functions through the `this` keyword. This means that service instances can also be accessed as named properties of the backbone, and so the following code is roughly equivalent to the previous example:
 
 ```javascript
 function make() {
@@ -122,7 +122,7 @@ function make() {
 
 ## Forward dependencies
 
-It's not always possible to organize services so that all dependencies are backwards directed, so _understruct_ provides a mechanism for a service to request a dependency on a service in a higher layer which hasn't been instantiated yet. This can be done using the `onServiceBind` method on the backbone instance. A service or factory function can call the method, passing it the name of a required service, together with a callback function which will be invoked when the service becomes available. The dependent service can then use the callback to resolve its dependency. The callback will also work if the named service has already been bound when `onServiceBound` is called.
+It's not always possible to organize services so that all dependencies are backwards directed, so _understruct_ provides a mechanism for a service to request a dependency on a service in a higher layer which hasn't been instantiated yet. This can be done using the `onServiceBind` method on the backbone instance. A service or factory function can call the method, passing it the name of a required service, together with a callback function which will be invoked when the service becomes available. The dependent service can then use the callback to resolve its dependency. The callback will also work if the named service has already been bound when `onServiceBind` is called.
 
 Note that when instantiating a service with forward dependencies that, by necessity, the service's factory function must return the service instance in an incomplete state - i.e. without all its dependencies resolved.
 
@@ -133,11 +133,13 @@ function make() {
 
     // Instantiate the service.
     const service = new Service();
+
     // Request dependency notification
     // Note that 'this' is the understruct backbone.
     this.onServiceBind('db', ( db ) => {
         service.db = db;
     });
+
     // Return the service instance.
     return service;
 }
@@ -164,19 +166,22 @@ More exact definitions can be expressed by specifying the expected types of each
 
 The `onConfirmingServiceBind` backbone method can be used to register a callback:
 
-```
+``` javascript
 function make( db ) {
 
     const service = new Service( db );
+
     // The interface definition - a service with getTime and setTime methods.
     const timerIF = {
         'getTime': 'function',
         'setTime': 'function'
     };
+
     // Register the callback.
     this.onConformingServiceBind( timerIF, ( timer ) => {
         service.timer = timer;
     });
+
     return service;
 }
 ```
