@@ -25,10 +25,12 @@ const settings = {
 }
 
 function db( settings ) {
+    // The IPC service.
     let service = new understruct.IPCService('db');
     service.events = ['ping'];
     service.messages = {
-        getMessage: () => settings.message
+        getMessage: () => settings.message,
+        sendPing: () => service.server.emit('ping')
     };
     return service;
 }
@@ -94,10 +96,16 @@ else {
             assert( app.services.out !== undefined );
         });
 
-        it('out.message should equal out.getMessage', async function() {
+        it('should have matching settings.message and out.getMessage', async function() {
             let { settings, out } = app.services;
             let message = await out.getMessage();
             assert( settings.message === message );
+        });
+
+        it('should receive a ping message from the server', function( done ) {
+            let { db } = app.services;
+            db.on('ping', done );
+            db.sendPing();
         });
 
         after( function() {
