@@ -23,35 +23,34 @@ const settings = {
 }
 
 function db( settings ) {
-    return Promise.resolve({
+    return {
         getMessage: () => settings.message
-    });
+    }
 }
 
-function out( settings ) {
-    const service = {
-        message: settings.message,
-        getMessage: () => service.db.getMessage()
-    };
-    this.onServiceBind('db', db => {
-        service.db = db;
+function out( db, settings ) {
+    return new Promise( ( resolve, reject ) => {
+        resolve({
+            message: settings.message,
+            getMessage: () => db.getMessage()
+        });
     });
-    return Promise.resolve( service );
 }
 
 const logger = () => {};
 
-describe('forward dependency', function() {
+describe('backward dependency', function() {
 
     let app;
 
     before( async function() {
         app = await understruct.start([
             { settings },
-            { out },
-            { db }
+            { db },
+            { out }
         ], logger );
     });
+
 
     it('should have a settings service', function() {
         assert( app.services.settings !== undefined );
@@ -72,21 +71,18 @@ describe('forward dependency', function() {
 
 });
 
-describe('forward dependency on lower layer', function() {
+describe('backward dependency with missing service', function() {
 
-    let app;
-
-    before( async function() {
-        app = await understruct.start([
-            { settings },
-            { db },
-            { out }
-        ], logger );
-    });
-
-    it('out.message should equal out.getMessage', function() {
-        let { out } = app.services;
-        assert( out.message === out.getMessage() );
+    it('should throw an error', async function() {
+        try {
+            await understruct.start([
+                { db }
+            ], logger );
+            assert( false );
+        }
+        catch( e ) {
+            assert( e.message == "Unresolved dependency: 'settings' for 'db'" );
+        }
     });
 
 });

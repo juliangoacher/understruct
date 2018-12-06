@@ -33,7 +33,11 @@ function out( settings ) {
         message: settings.message,
         getMessage: () => service.db.getMessage()
     };
-    this.onServiceBind('db', db => {
+    const dbif = { getMessage: 'function' };
+    this.onConformingServiceBind( dbif, db => {
+        if( db === service ) {
+            return;
+        }
         service.db = db;
     });
     return Promise.resolve( service );
@@ -41,7 +45,7 @@ function out( settings ) {
 
 const logger = () => {};
 
-describe('forward dependency', function() {
+describe('conforming forward dependency', function() {
 
     let app;
 
@@ -53,16 +57,10 @@ describe('forward dependency', function() {
         ], logger );
     });
 
-    it('should have a settings service', function() {
-        assert( app.services.settings !== undefined );
-    });
-
-    it('should have a db service', function() {
-        assert( app.services.db !== undefined );
-    });
-
-    it('should have an out service', function() {
-        assert( app.services.out !== undefined );
+    it('should have an out service with a db property', function() {
+        let { out } = app.services;
+        assert( out !== undefined );
+        assert( out.db !== undefined );
     });
 
     it('out.message should equal out.getMessage', function() {
@@ -72,7 +70,7 @@ describe('forward dependency', function() {
 
 });
 
-describe('forward dependency on lower layer', function() {
+describe('conforming backward dependency', function() {
 
     let app;
 
@@ -82,6 +80,12 @@ describe('forward dependency on lower layer', function() {
             { db },
             { out }
         ], logger );
+    });
+
+    it('should have an out service with a db property', function() {
+        let { out } = app.services;
+        assert( out !== undefined );
+        assert( out.db !== undefined );
     });
 
     it('out.message should equal out.getMessage', function() {

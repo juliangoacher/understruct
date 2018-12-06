@@ -26,17 +26,23 @@ Use _understruct_ by starting a backbone instance with the backbone configuratio
 ```javascript
     const understruct = require('understruct');
 
-    understruct.start([
-        {
-            'settings': require('./settings')
-        },
-        { 
-            'db': require('./db')
-        },
-        {
-            'http': require('./http')
-        }
-    ]);
+    async function run() {
+        let app = await understruct.start([
+            {
+                'settings': require('./settings')
+            },
+            { 
+                'db': require('./db')
+            },
+            {
+                'http': require('./http')
+            }
+        ]);
+        
+        return app;
+    }
+
+    run();
 ```
 
 The backbone configuration is a list of _service layers_. Each service layer contains one or more service instances bound to a service name. See the following sections for more information.
