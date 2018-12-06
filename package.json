@@ -1,6 +1,6 @@
 {
   "name": "understruct",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "description": "Node.js microservice backbone",
   "main": "lib/index.js",
   "dependencies": [
