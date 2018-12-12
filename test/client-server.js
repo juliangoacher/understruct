@@ -24,16 +24,20 @@ const settings = {
     message: 'Test message'
 }
 
-function db( settings ) {
-    // The IPC service.
-    let service = new understruct.IPCService('db');
-    service.events = ['ping'];
-    service.messages = {
-        getMessage: () => settings.message,
-        sendPing: () => service.server.emit('ping')
-    };
-    return service;
-}
+// An IPC service.
+const db = new understruct.IPCService('db');
+db.events = ['ping'];
+db.initServer = function( settings ) {
+    this.settings = settings;
+};
+db.messages = {
+    getMessage: function() {
+        return this.settings.message;
+    },
+    sendPing: function() {
+        this.emit('ping');
+    }
+};
 
 const [ , , mode ] = process.argv;
 
@@ -42,12 +46,7 @@ if( mode == 'server' ) {
     // Start db server in separate process.
     understruct.start([
         { settings },
-        {
-            db: function( settings ) {
-                // nonsense
-                return db( settings ).server;
-            }
-        }
+        { db: db.server }
     ], logger );
 
 }
@@ -78,17 +77,12 @@ else {
             app = await understruct.start([
                 { settings },
                 { out },
-                { 
-                    db: function( settings ) {
-                        // nonsense
-                        return db( settings ).client;
-                    }
-                }
+                { db: db.client }
             ], logger );
         });
 
 
-        it('should have a db service', function() {
+        it('should have a db service with a settings property', function() {
             assert( app.services.db !== undefined );
         });
 

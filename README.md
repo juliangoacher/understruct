@@ -271,17 +271,17 @@ understruct.start([
 
 (Note that IPC isn't used in standalone mode.)
 
-To support this style of usage, the `IPCService` class is designed to be instantiated synchronously so that it can be returned as a module export. If a service needs to perform asynchronous operations as part of its setup then these can be deferred from service initialization to service startup using the `startClient` and `startServer` properties of the `IPCService` instance, for example:
+To support this style of usage, the `IPCService` class is designed to be instantiated synchronously so that it can be returned as a module export. If a service needs to perform asynchronous operations as part of its setup then these can be deferred from service initialization to service startup using the `initClient` and `initServer` properties of the `IPCService` instance, for example:
 
 ```javascript
     const service = new IPCService();
-    service.startServer = async function( db ) {
+    service.initServer = async function( db ) {
         // ... async startup ...
     };
     module.exports = service;
 ```
 
-Note that, in this usage pattern as with the standard usage pattern, understruct will resolve dependencies either through the startClient/startServer argument list, or through the `this` keyword within the function body.
+Note that service dependencies can be declared through the `initClient` or `initServer` argument list, as with normal module initialization. Unlike normal module initialization, the `this` keyword within an `initClient` or `initServer` call refers to the IPCService client or server instance being initialized; however, the backbone can be accessed using the `app` property (e.g. `this.app`).
 
 # Licence
 
