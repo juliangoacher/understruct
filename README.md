@@ -281,7 +281,7 @@ To support this style of usage, the `IPCService` class is designed to be instant
     module.exports = service;
 ```
 
-Note that service dependencies can be declared through the `initClient` or `initServer` argument list, as with normal module initialization. Unlike normal module initialization, the `this` keyword within an `initClient` or `initServer` call refers to the IPCService client or server instance being initialized; however, the backbone can be accessed using the `app` property (e.g. `this.app`).
+Note that service dependencies can be declared through the `initClient` or `initServer` argument list, as with normal module initialization. Unlike normal module initialization, the `this` keyword within an `initClient` or `initServer` call refers to the `IPCService` client or server instance being initialized; however, the backbone can be accessed from within these functions using the `app` property (e.g. `this.app`).
 
 # Licence
 
